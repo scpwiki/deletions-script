@@ -2,8 +2,8 @@
 // @name         deleter
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  try to take over the world!
-// @author       You
+// @description  Sets up a deletions PM when run on a page to be deleted
+// @author       Unknown + revisions by Kufat
 // @match        https://scp-wiki.wikidot.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
