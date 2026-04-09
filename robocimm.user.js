@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         robocimm
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Automatically populate a deletions PM opened by the 'deleter' userscript
 // @author       Cimmerian? + revisions by Kufat
-// @match        https://www.wikidot.com/*
+// @match        https://www.wikidot.com/account/messages*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=wikidot.com
 // @grant        none
 // ==/UserScript==
@@ -17,6 +17,7 @@
 
     function delayer()
     {
+        console.log("setting timeout");
         setTimeout(init,500);
     }
 
@@ -25,19 +26,35 @@
         var spliturl = window.location.href.split("=")
         if(spliturl.length > 1)
         {
+            console.log("Attempting to populate subject");
             var source = decodeURIComponent(escape(window.atob(spliturl[1])))
             console.log(source);
             var subject = document.getElementById("pm-subject");
             if(typeof(subject) == "undefined" || subject == null)
             {
-                setTimeout(init,500); // infinite loop if something stupid is happening, but harmless
+                console.log("Subject element not present; retrying");
+                delayer(); // infinite loop if something stupid is happening, but harmless
                 return;
+            }
+            else
+            {
+                if(subject.value.length > 0)
+                {
+                    console.log("Subject already populated; exiting");
+                    return;
+                }
             }
             subject.value ="Staff PM - Deletions Notice";
 
             const usernameHTML = document.getElementById("selected-user-rendered").innerHTML;
             const unameRegex = /onclick\="WIKIDOT\.page\.listeners\.userInfo\(\d+\)">([-_\s\w]+)<\/a><\/span>/;
             const match = usernameHTML.match(unameRegex);
+            if(!match)
+            {
+                console.log("Couldn't get username; retrying");
+                delayer();
+                return;
+            }
 
             const username = match.length == 2 ? match[1] : "Hello";
 
@@ -59,7 +76,11 @@ If you have any questions about deletions, you may contact a staff member.`;
 
             document.getElementById("editor-textarea").value = text;
         }
+        else
+        {
+            console.log("giving up due to no = in URL");
+        }
 
     }
-
+    delayer();
 })();
