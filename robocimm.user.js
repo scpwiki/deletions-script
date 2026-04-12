@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         robocimm
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  Automatically populate a deletions PM opened by the 'deleter' userscript
 // @author       Cimmerian? + revisions by Kufat
 // @match        https://www.wikidot.com/account/messages*
@@ -26,6 +26,16 @@
         var spliturl = window.location.href.split("=")
         if(spliturl.length > 1)
         {
+            const usernameHTML = document.getElementById("selected-user-rendered").innerHTML;
+            const unameRegex = /onclick\="WIKIDOT\.page\.listeners\.userInfo\(\d+\)">(.{1,25})<\/a><\/span>/;
+            const match = usernameHTML.match(unameRegex);
+            if(!match)
+            {
+                console.log("Couldn't get username; retrying");
+                delayer();
+                return;
+            }
+
             console.log("Attempting to populate subject");
             var source = decodeURIComponent(escape(window.atob(spliturl[1])))
             console.log(source);
@@ -45,16 +55,6 @@
                 }
             }
             subject.value ="Staff PM - Deletions Notice";
-
-            const usernameHTML = document.getElementById("selected-user-rendered").innerHTML;
-            const unameRegex = /onclick\="WIKIDOT\.page\.listeners\.userInfo\(\d+\)">([-_\s\w]+)<\/a><\/span>/;
-            const match = usernameHTML.match(unameRegex);
-            if(!match)
-            {
-                console.log("Couldn't get username; retrying");
-                delayer();
-                return;
-            }
 
             const username = match.length == 2 ? match[1] : "Hello";
 
