@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         robocimm
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  Automatically populate a deletions PM opened by the 'deleter' userscript
 // @author       Cimmerian? + revisions by Kufat
 // @match        https://www.wikidot.com/account/messages*
@@ -26,6 +26,23 @@
         var spliturl = window.location.href.split("=")
         if(spliturl.length > 1)
         {
+            const selectedUserRendered = document.getElementById("selected-user-rendered");
+            if(typeof(selectedUserRendered) == "undefined" || subject == selectedUserRendered)
+            {
+                console.log("selected-user-rendered element not present; retrying");
+                delayer(); // infinite loop if something stupid is happening, but harmless
+                return;
+            }
+            const usernameHTML = selectedUserRendered.innerHTML;
+            const unameRegex = /onclick\="WIKIDOT\.page\.listeners\.userInfo\(\d+\)">([^<]+)<\/a><\/span>/;
+            const match = usernameHTML.match(unameRegex);
+            if(!match)
+            {
+                console.log("Couldn't get username; retrying");
+                delayer();
+                return;
+            }
+
             console.log("Attempting to populate subject");
             var source = decodeURIComponent(escape(window.atob(spliturl[1])))
             console.log(source);
@@ -33,7 +50,7 @@
             if(typeof(subject) == "undefined" || subject == null)
             {
                 console.log("Subject element not present; retrying");
-                delayer(); // infinite loop if something stupid is happening, but harmless
+                delayer();
                 return;
             }
             else
@@ -45,16 +62,6 @@
                 }
             }
             subject.value ="Staff PM - Deletions Notice";
-
-            const usernameHTML = document.getElementById("selected-user-rendered").innerHTML;
-            const unameRegex = /onclick\="WIKIDOT\.page\.listeners\.userInfo\(\d+\)">([-_\s\w]+)<\/a><\/span>/;
-            const match = usernameHTML.match(unameRegex);
-            if(!match)
-            {
-                console.log("Couldn't get username; retrying");
-                delayer();
-                return;
-            }
 
             const username = match.length == 2 ? match[1] : "Hello";
 
