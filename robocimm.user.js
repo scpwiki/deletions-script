@@ -33,7 +33,7 @@
                 delayer(); // infinite loop if something stupid is happening, but harmless
                 return;
             }
-            const usernameHTML = document.getElementById("selected-user-rendered").innerHTML;
+            const usernameHTML = selectedUserRendered.innerHTML;
             const unameRegex = /onclick\="WIKIDOT\.page\.listeners\.userInfo\(\d+\)">([^<]+)<\/a><\/span>/;
             const match = usernameHTML.match(unameRegex);
             if(!match)
