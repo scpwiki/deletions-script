@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         deleter
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Sets up a deletions PM when run on a page to be deleted
 // @author       Unknown + revisions by Kufat
 // @match        https://scp-wiki.wikidot.com/*
@@ -11,8 +11,10 @@
 
 (function() {
     'use strict';
-    if (window.location.href.includes("#d"))
+    if (window.location.href.includes("#d") || window.location.href.endsWith("?d"))
+    {
         init()
+    }
     async function cromApiRequest(query, variables = null) {
         // Make a fetch request with the query and (optional) variables.
         const response = await fetch("https://api.crom.avn.sh/graphql", {
@@ -42,24 +44,24 @@
 
     async function init()
     {
-        var url = window.location.href.replaceAll("#d","").replaceAll("https:","http:")
+        var url = window.location.href.replaceAll("#d","").replaceAll("?d","").replaceAll("https:","http:")
         var cromQuery = "query getusers {page(url: \""+url+"\") {attributions { user{wikidotInfo{wikidotId}}} wikidotInfo {source}} }";
         console.log(cromQuery)
 
         var cromResponce = await cromApiRequest(cromQuery)
 
-        var users = cromResponce["page"]["attributions"]
+        var users = cromResponce.page.attributions
         users = users.map(unwrap)
 
         console.log(users)
 
-        var source = cromResponce["page"]["wikidotInfo"]["source"]
+        var source = cromResponce.page.wikidotInfo.source
 
         var b64source = window.btoa(unescape(encodeURIComponent(source)))
 
         for (let i = 0; i < users.length; i++) {
-            window.open("https://www.wikidot.com/account/messages#/new/"+users[i]+"?="+b64source)
-        }
+                window.open("https://www.wikidot.com/account/messages#/new/"+users[i]+"?="+b64source)
+            }
 
 
 
@@ -68,6 +70,6 @@
 
     function unwrap(input)
     {
-        return input["user"]["wikidotInfo"]["wikidotId"]
+        return input.user.wikidotInfo.wikidotId
     }
 })();
