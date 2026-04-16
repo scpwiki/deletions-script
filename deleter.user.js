@@ -60,8 +60,8 @@
         var b64source = window.btoa(unescape(encodeURIComponent(source)))
 
         for (let i = 0; i < users.length; i++) {
-                window.open("https://www.wikidot.com/account/messages#/new/"+users[i]+"?="+b64source)
-            }
+            window.open("https://www.wikidot.com/account/messages#/new/"+users[i]+"?="+b64source)
+        }
 
 
 
