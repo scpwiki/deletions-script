@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         deleter
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Sets up a deletions PM when run on a page to be deleted
 // @author       Unknown + revisions by Kufat
 // @match        https://scp-wiki.wikidot.com/*
+// @match        https://scpwiki.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // ==/UserScript==
