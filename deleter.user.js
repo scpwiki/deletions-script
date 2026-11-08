@@ -45,7 +45,7 @@
 
     async function init()
     {
-        var url = window.location.href.replaceAll("#d","").replaceAll("?d","").replaceAll("https:","http:")
+        var url = window.location.href.replaceAll("#d","").replaceAll("?d","").replaceAll("https:","http:").replaceAll("scpwiki.com","scp-wiki.wikidot.com");
         var cromQuery = "query getusers {page(url: \""+url+"\") {attributions { user{wikidotInfo{wikidotId}}} wikidotInfo {source}} }";
         console.log(cromQuery)
 
